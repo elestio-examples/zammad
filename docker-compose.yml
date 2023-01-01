@@ -18,7 +18,7 @@ services:
     volumes:
       - ./zammad_backup:/var/tmp/zammad
       - ./zammad_data:/opt/zammad:ro
-      - ./scripts/backup.sh:/usr/local/bin/backup.sh:ro
+      - ./scripts/backup.sh:/usr/local/bin/backup.sh
 
   zammad-elasticsearch:
     image: bitnami/elasticsearch:8.5.1
