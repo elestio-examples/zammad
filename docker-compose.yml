@@ -1,0 +1,111 @@
+version: '3.3'
+
+services:
+
+  zammad-backup:
+    command: ["zammad-backup"]
+    depends_on:
+      - zammad-railsserver
+      - zammad-postgresql
+    entrypoint: /usr/local/bin/backup.sh
+    environment:
+      - BACKUP_SLEEP=86400
+      - HOLD_DAYS=10
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASSWORD=${SOFTWARE_PASSWORD}
+    image: postgres:${POSTGRES_VERSION}
+    restart: ${RESTART}
+    volumes:
+      - ./zammad_backup:/var/tmp/zammad
+      - ./zammad_data:/opt/zammad:ro
+      - ./scripts/backup.sh:/usr/local/bin/backup.sh:ro
+
+  zammad-elasticsearch:
+    image: bitnami/elasticsearch:8.5.1
+    restart: ${RESTART}
+    volumes:
+      - ./elasticsearch_data:/bitnami/elasticsearch/data
+
+  zammad-init:
+    command: ["zammad-init"]
+    depends_on:
+      - zammad-postgresql
+    environment:
+      - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${SOFTWARE_PASSWORD}
+      - REDIS_URL=${REDIS_URL}
+    image: ${IMAGE_REPO}:${VERSION}
+    restart: on-failure
+    volumes:
+      - ./zammad_data:/opt/zammad
+
+  zammad-memcached:
+    command: memcached -m 256M
+    image: memcached:1.6.17-alpine
+    restart: ${RESTART}
+
+  zammad-nginx:
+    command: ["zammad-nginx"]
+    ports:
+      - "172.17.0.1:8080:8080"
+    depends_on:
+      - zammad-railsserver
+    image: ${IMAGE_REPO}:${VERSION}
+    environment:
+      - NGINX_SERVER_SCHEME=https
+    restart: ${RESTART}
+    volumes:
+      - ./zammad_data:/opt/zammad
+
+  zammad-postgresql:
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${SOFTWARE_PASSWORD}
+    image: postgres:${POSTGRES_VERSION}
+    restart: ${RESTART}
+    volumes:
+      - ./postgresql_data:/var/lib/postgresql/data
+
+  zammad-railsserver:
+    command: ["zammad-railsserver"]
+    depends_on:
+      - zammad-memcached
+      - zammad-postgresql
+      - zammad-redis
+    environment:
+      - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
+      - REDIS_URL=${REDIS_URL}
+    image: ${IMAGE_REPO}:${VERSION}
+    restart: ${RESTART}
+    volumes:
+      - ./zammad_data:/opt/zammad
+
+  zammad-redis:
+    image: redis:7.0.5-alpine
+    restart: ${RESTART}
+
+  zammad-scheduler:
+    command: ["zammad-scheduler"]
+    depends_on:
+      - zammad-memcached
+      - zammad-railsserver
+      - zammad-redis
+    image: ${IMAGE_REPO}:${VERSION}
+    restart: ${RESTART}
+    volumes:
+      - ./zammad_data:/opt/zammad
+
+  zammad-websocket:
+    command: ["zammad-websocket"]
+    depends_on:
+      - zammad-memcached
+      - zammad-railsserver
+      - zammad-redis
+    environment:
+      - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
+      - REDIS_URL=${REDIS_URL}
+    image: ${IMAGE_REPO}:${VERSION}
+    restart: ${RESTART}
+    volumes:
+      - ./zammad_data:/opt/zammad
