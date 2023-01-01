@@ -12,7 +12,7 @@ services:
       - BACKUP_SLEEP=86400
       - HOLD_DAYS=10
       - POSTGRESQL_USER=${POSTGRES_USER}
-      - POSTGRESQL_PASSWORD=${SOFTWARE_PASSWORD}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASS}
     image: postgres:${POSTGRES_VERSION}
     restart: ${RESTART}
     volumes:
@@ -33,7 +33,7 @@ services:
     environment:
       - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
       - POSTGRESQL_USER=${POSTGRES_USER}
-      - POSTGRESQL_PASS=${SOFTWARE_PASSWORD}
+      - POSTGRESQL_PASS=${POSTGRES_PASS}
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${VERSION}
     restart: on-failure
@@ -61,7 +61,7 @@ services:
   zammad-postgresql:
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${SOFTWARE_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
     image: postgres:${POSTGRES_VERSION}
     restart: ${RESTART}
     volumes:
