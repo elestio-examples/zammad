@@ -48,7 +48,7 @@ services:
   zammad-nginx:
     command: ["zammad-nginx"]
     ports:
-      - "172.17.0.1:8080:8080"
+      - "172.17.0.1:8784:8080"
     depends_on:
       - zammad-railsserver
     image: ${IMAGE_REPO}:${VERSION}
