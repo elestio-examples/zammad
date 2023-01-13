@@ -26,6 +26,8 @@ environments:
     value: "redis://zammad-redis:6379"
   - key: "RESTART"
     value: "always"
+  - key: DOMAIN
+    value: "[CI_CD_DOMAIN]"    
 
 config:
   runTime: "dockerCompose"
