@@ -35,7 +35,7 @@ services:
       - POSTGRESQL_USER=${POSTGRES_USER}
       - POSTGRESQL_PASS=${POSTGRES_PASS}
       - REDIS_URL=${REDIS_URL}
-    image: ${IMAGE_REPO}:${VERSION}
+    image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: on-failure
     volumes:
       - ./zammad_data:/opt/zammad
@@ -51,7 +51,7 @@ services:
       - "172.17.0.1:8784:8080"
     depends_on:
       - zammad-railsserver
-    image: ${IMAGE_REPO}:${VERSION}
+    image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     environment:
       - NGINX_SERVER_SCHEME=https
     restart: ${RESTART}
@@ -76,7 +76,7 @@ services:
     environment:
       - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
       - REDIS_URL=${REDIS_URL}
-    image: ${IMAGE_REPO}:${VERSION}
+    image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
       - ./zammad_data:/opt/zammad
@@ -91,7 +91,7 @@ services:
       - zammad-memcached
       - zammad-railsserver
       - zammad-redis
-    image: ${IMAGE_REPO}:${VERSION}
+    image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
       - ./zammad_data:/opt/zammad
@@ -105,7 +105,7 @@ services:
     environment:
       - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
       - REDIS_URL=${REDIS_URL}
-    image: ${IMAGE_REPO}:${VERSION}
+    image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
       - ./zammad_data:/opt/zammad
