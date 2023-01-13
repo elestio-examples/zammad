@@ -8,7 +8,7 @@ ports:
     path: "/"
     isAuth: false
 environments:
-  - key: "VERSION"
+  - key: "SOFTWARE_VERSION_TAG"
     value: "latest"
   - key: "IMAGE_REPO"
     value: "zammad/zammad-docker-compose"
