@@ -9,7 +9,7 @@ ports:
     isAuth: false
 environments:
   - key: "SOFTWARE_VERSION_TAG"
-    value: "latest"
+    value: "5.4.1-38"
   - key: "IMAGE_REPO"
     value: "zammad/zammad-docker-compose"
   - key: "POSTGRES_USER"
