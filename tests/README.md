@@ -180,21 +180,21 @@ Here are some example snippets to help you get started creating a container.
 
 ### Environment variables
 
-|       Variable       |  Value (example)  |
-| :------------------: | :---------------: |
-|     ADMIN_EMAIL      |  admin@gmail.com  |
-|    ADMIN_PASSWORD    |   your-password   |
-| SOFTWARE_VERSION_TAG |      latest       |
-|     BACKUP_SLEEP     |        1d         |
-|      HOLD_DAYS       |         7         |
-|      IMAGE_REPO      |  elestio/zammad   |
-|       RESTART        |      always       |
-|    POSTGRES_USER     |     your-user     |
-|  POSTGRES_PASSWORD   | your-db-password  |
-|     POSTGRES_DB      |   your-db-name    |
-|   POSTGRES_VERSION   |      latest       |
-|   MEMCACHE_SERVERS   |  memcache:server  |
-|      REDIS_URL       | redis://redis-url |
+|       Variable       |    Value (example)     |
+| :------------------: | :--------------------: |
+|     ADMIN_EMAIL      |    admin@gmail.com     |
+|    ADMIN_PASSWORD    |     your-password      |
+| SOFTWARE_VERSION_TAG |         latest         |
+|     BACKUP_SLEEP     |           1d           |
+|      HOLD_DAYS       |           7            |
+|      IMAGE_REPO      |     elestio/zammad     |
+|       RESTART        |         always         |
+|    POSTGRES_USER     |       your-user        |
+|  POSTGRES_PASSWORD   |    your-db-password    |
+|     POSTGRES_DB      |      your-db-name      |
+|   POSTGRES_VERSION   |         latest         |
+|   MEMCACHE_SERVERS   |     memcache:11211     |
+|      REDIS_URL       | redis://redis-url:6379 |
 
 # Maintenance
 
