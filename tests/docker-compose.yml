@@ -6,7 +6,7 @@ services:
     depends_on:
       - zammad-railsserver
       - zammad-postgresql
-    entrypoint: /usr/local/bin/backup.sh
+    entrypoint: /usr/local/bin/backup/backup.sh
     environment:
       - BACKUP_SLEEP=${BACKUP_SLEEP}
       - HOLD_DAYS=${HOLD_DAYS}
@@ -15,9 +15,9 @@ services:
     image: postgres:${POSTGRES_VERSION}
     restart: ${RESTART}
     volumes:
-      - ./zammad_backup:/var/tmp/zammad
-      - ./zammad_data:/opt/zammad:ro
-      - ./scripts/backup.sh:/usr/local/bin/backup.sh
+      # - ./zammad_backup:/var/tmp/zammad
+      # - ./zammad_data:/opt/zammad:ro
+      - ${folderName}/scripts:/usr/local/bin/backup
 
   zammad-elasticsearch:
     image: bitnami/elasticsearch:8.5.1
@@ -36,8 +36,8 @@ services:
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: on-failure
-    volumes:
-      - ./zammad_data:/opt/zammad
+    # volumes:
+    #   - ./zammad_data:/opt/zammad
 
   zammad-memcached:
     command: memcached -m 256M
@@ -54,8 +54,8 @@ services:
     environment:
       - NGINX_SERVER_SCHEME=https
     restart: ${RESTART}
-    volumes:
-      - ./zammad_data:/opt/zammad
+    # volumes:
+    #   - ./zammad_data:/opt/zammad
 
   zammad-postgresql:
     environment:
@@ -63,8 +63,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASS}
     image: postgres:${POSTGRES_VERSION}
     restart: ${RESTART}
-    volumes:
-      - ./postgresql_data:/var/lib/postgresql/data
+    # volumes:
+    #   - ./postgresql_data:/var/lib/postgresql/data
 
   zammad-railsserver:
     command: ["zammad-railsserver"]
@@ -77,8 +77,8 @@ services:
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
-    volumes:
-      - ./zammad_data:/opt/zammad
+    # volumes:
+    #   - ./zammad_data:/opt/zammad
 
   zammad-redis:
     image: redis:7.0.5-alpine
@@ -92,8 +92,8 @@ services:
       - zammad-redis
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
-    volumes:
-      - ./zammad_data:/opt/zammad
+    # volumes:
+    #   - ./zammad_data:/opt/zammad
 
   zammad-websocket:
     command: ["zammad-websocket"]
@@ -106,5 +106,5 @@ services:
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
-    volumes:
-      - ./zammad_data:/opt/zammad
+    # volumes:
+    #   - ./zammad_data:/opt/zammad
