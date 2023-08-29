@@ -8,8 +8,8 @@ services:
       - zammad-postgresql
     entrypoint: /usr/local/bin/backup.sh
     environment:
-      - BACKUP_SLEEP=${BACKUP_SLEEP}
-      - HOLD_DAYS=${HOLD_DAYS}
+      - BACKUP_SLEEP=86400
+      - HOLD_DAYS=10
       - POSTGRESQL_USER=${POSTGRES_USER}
       - POSTGRESQL_PASSWORD=${POSTGRES_PASS}
     image: postgres:${POSTGRES_VERSION}
@@ -17,7 +17,7 @@ services:
     volumes:
       - ./zammad_backup:/var/tmp/zammad
       - ./zammad_data:/opt/zammad:ro
-      - ./scripts/backup.sh:/usr/local/bin/backup.sh
+      - ./${folderName}/scripts/backup.sh:/usr/local/bin/backup.sh
 
   zammad-elasticsearch:
     image: bitnami/elasticsearch:8.5.1
