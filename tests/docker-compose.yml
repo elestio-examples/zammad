@@ -1,4 +1,4 @@
-version: "3.3"
+version: '3.8'
 
 services:
   zammad-backup:
@@ -6,7 +6,8 @@ services:
     depends_on:
       - zammad-railsserver
       - zammad-postgresql
-    entrypoint: /usr/local/bin/backup.sh
+    entrypoint: chmod +x /usr/local/bin/backup.sh && /usr/local/bin/backup.sh
+    user: 0:0
     environment:
       - BACKUP_SLEEP=86400
       - HOLD_DAYS=10
@@ -16,19 +17,18 @@ services:
     restart: ${RESTART}
     volumes:
       - ./zammad_backup:/var/tmp/zammad
-      - ./zammad_data:/opt/zammad:ro
-      - ./${folderName}/scripts/backup.sh:/usr/local/bin/backup.sh
+      - ./zammad-var:/opt/zammad:ro
+      - ./backup.sh:/usr/local/bin/backup.sh:z
 
   zammad-elasticsearch:
-    image: bitnami/elasticsearch:8.5.1
+    image: bitnami/elasticsearch:8
     restart: ${RESTART}
-    volumes:
-      - ./elasticsearch_data:/bitnami/elasticsearch/data
 
   zammad-init:
     command: ["zammad-init"]
     depends_on:
       - zammad-postgresql
+    user: 0:0
     environment:
       - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
       - POSTGRESQL_USER=${POSTGRES_USER}
@@ -37,7 +37,8 @@ services:
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: on-failure
     volumes:
-      - ./zammad_data:/opt/zammad
+      - ./zammad-config-nginx:/etc/nginx/sites-enabled
+      - ./zammad-var:/opt/zammad/var
 
   zammad-memcached:
     command: memcached -m 256M
@@ -46,6 +47,7 @@ services:
 
   zammad-nginx:
     command: ["zammad-nginx"]
+    user: 0:0
     ports:
       - "172.17.0.1:8784:8080"
     depends_on:
@@ -53,9 +55,17 @@ services:
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     environment:
       - NGINX_SERVER_SCHEME=https
+      - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_HOST=${POSTGRES_HOST}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASS}
+      - POSTGRESQL_PORT=${POSTGRES_PORT}
+      - REDIS_URL=${REDIS_URL}
     restart: ${RESTART}
     volumes:
-      - ./zammad_data:/opt/zammad
+      - ./zammad-config-nginx:/etc/nginx/sites-enabled:z
+      - ./zammad-var:/opt/zammad/var:z
 
   zammad-postgresql:
     environment:
@@ -74,11 +84,16 @@ services:
       - zammad-redis
     environment:
       - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_HOST=${POSTGRES_HOST}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASS}
+      - POSTGRESQL_PORT=${POSTGRES_PORT}
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
-      - ./zammad_data:/opt/zammad
+      - ./zammad-var:/opt/zammad/var
 
   zammad-redis:
     image: redis:7.0.5-alpine
@@ -90,10 +105,18 @@ services:
       - zammad-memcached
       - zammad-railsserver
       - zammad-redis
+    environment:
+      - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_HOST=${POSTGRES_HOST}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASS}
+      - POSTGRESQL_PORT=${POSTGRES_PORT}
+      - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
-      - ./zammad_data:/opt/zammad
+      - ./zammad-var:/opt/zammad/var
 
   zammad-websocket:
     command: ["zammad-websocket"]
@@ -103,8 +126,14 @@ services:
       - zammad-redis
     environment:
       - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_HOST=${POSTGRES_HOST}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASS}
+      - POSTGRESQL_PORT=${POSTGRES_PORT}
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
-      - ./zammad_data:/opt/zammad
+      - ./zammad-var:/opt/zammad/var
+
