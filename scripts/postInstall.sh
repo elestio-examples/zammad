@@ -2,4 +2,4 @@
 # set -o allexport; source .env; set +o allexport;
 
 echo "Waiting..."
-sleep 340s;
+sleep 400s;
