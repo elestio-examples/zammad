@@ -8,3 +8,5 @@ chown -R 1000:1000 zammad_data
 chown -R 1000:1000 zammad_backup
 
 chmod +x scripts/backup.sh
+
+docker run --rm -v ./zammad_data:/target_volume --user=root --entrypoint /bin/bash zammad/zammad-docker-compose:6.2.0-1 -c "cp -a /opt/zammad /target_volume/"

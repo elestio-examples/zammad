@@ -9,7 +9,7 @@ ports:
     isAuth: false
 environments:
   - key: "SOFTWARE_VERSION_TAG"
-    value: "5.4.1-38"
+    value: "latest"
   - key: "IMAGE_REPO"
     value: "zammad/zammad-docker-compose"
   - key: "POSTGRES_USER"
@@ -17,7 +17,7 @@ environments:
   - key: "POSTGRES_PASS"
     value: "random_password"
   - key: "POSTGRES_VERSION"
-    value: "15.1-alpine"
+    value: "15.3-alpine"
   - key: "MAIL_SERVER"
     value: "172.17.0.1:25"
   - key: "MEMCACHE_SERVERS"
@@ -27,7 +27,15 @@ environments:
   - key: "RESTART"
     value: "always"
   - key: "DOMAIN"
-    value: "[CI_CD_DOMAIN]"    
+    value: "[CI_CD_DOMAIN]"
+  - key: "POSTGRES_DB"
+    value: "zammad_production"
+  - key: "POSTGRES_HOST"
+    value: "zammad-postgresql"
+  - key: "POSTGRES_PORT"
+    value: "5432"
+  - key: "MEMCACHE_VERSION"
+    value: "1.6.20-alpine"
 
 config:
   runTime: "dockerCompose"
