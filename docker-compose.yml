@@ -13,11 +13,13 @@ services:
       - POSTGRESQL_USER=${POSTGRES_USER}
       - POSTGRESQL_PASSWORD=${POSTGRES_PASS}
       - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRESQL_OPTIONS=?pool=50
     image: postgres:${POSTGRES_VERSION}
     restart: ${RESTART}
     volumes:
       - ./zammad_backup:/var/tmp/zammad
-      - ./zammad_data/zammad:/opt/zammad:ro
+      - ./zammad_data/zammad/storage:/opt/zammad/storage
+      - ./zammad_data/zammad/var:/opt/zammad/var
       - ./scripts/backup.sh:/usr/local/bin/backup.sh
 
   zammad-elasticsearch:
@@ -38,11 +40,12 @@ services:
       - POSTGRESQL_USER=${POSTGRES_USER}
       - POSTGRESQL_PASS=${POSTGRES_PASS}
       - POSTGRESQL_PORT=${POSTGRES_PORT}
+      - POSTGRESQL_OPTIONS=?pool=50
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: on-failure
     volumes:
-      - ./zammad_data/zammad:/opt/zammad
+      - ./zammad_data/zammad/storage:/opt/zammad/storage
 
   zammad-memcached:
     command: memcached -m 256M
@@ -58,15 +61,24 @@ services:
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     environment:
       - NGINX_SERVER_SCHEME=https
+      - MEMCACHE_SERVERS=${MEMCACHE_SERVERS}
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_HOST=${POSTGRES_HOST}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASS}
+      - POSTGRESQL_PORT=${POSTGRES_PORT}
+      - POSTGRESQL_OPTIONS=?pool=50
+      - REDIS_URL=${REDIS_URL}
     restart: ${RESTART}
     volumes:
-      - ./zammad_data/zammad:/opt/zammad
+      - ./zammad_data/zammad/storage:/opt/zammad/storage
 
   zammad-postgresql:
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASS}
+      - POSTGRESQL_OPTIONS=?pool=50
     image: postgres:${POSTGRES_VERSION}
     restart: ${RESTART}
     volumes:
@@ -85,11 +97,12 @@ services:
       - POSTGRESQL_USER=${POSTGRES_USER}
       - POSTGRESQL_PASS=${POSTGRES_PASS}
       - POSTGRESQL_PORT=${POSTGRES_PORT}
+      - POSTGRESQL_OPTIONS=?pool=50
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
-      - ./zammad_data/zammad:/opt/zammad
+      - ./zammad_data/zammad/storage:/opt/zammad/storage
 
   zammad-redis:
     image: redis:7.0.5-alpine
@@ -104,6 +117,7 @@ services:
       POSTGRESQL_USER: ${POSTGRES_USER}
       POSTGRESQL_PASS: ${POSTGRES_PASS}
       POSTGRESQL_PORT: ${POSTGRES_PORT}
+      POSTGRESQL_OPTIONS: ?pool=50
       REDIS_URL: ${REDIS_URL}
     depends_on:
       - zammad-memcached
@@ -112,7 +126,7 @@ services:
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
-      - ./zammad_data/zammad:/opt/zammad
+      - ./zammad_data/zammad/storage:/opt/zammad/storage
 
   zammad-websocket:
     command: ["zammad-websocket"]
@@ -127,8 +141,9 @@ services:
       - POSTGRESQL_USER=${POSTGRES_USER}
       - POSTGRESQL_PASS=${POSTGRES_PASS}
       - POSTGRESQL_PORT=${POSTGRES_PORT}
+      - POSTGRESQL_OPTIONS=?pool=50
       - REDIS_URL=${REDIS_URL}
     image: ${IMAGE_REPO}:${SOFTWARE_VERSION_TAG}
     restart: ${RESTART}
     volumes:
-      - ./zammad_data/zammad:/opt/zammad
+      - ./zammad_data/zammad/storage:/opt/zammad/storage
